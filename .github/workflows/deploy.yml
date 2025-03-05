@@ -3,7 +3,7 @@ name: Deploy to AWS Fargate
 on:
   push:
     branches:
-      - main
+      - main  # Ejecutar solo cuando haya cambios en la rama 'main'
 
 jobs:
   deploy:
@@ -11,8 +11,17 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Set up .NET
+        uses: actions/setup-dotnet@v3
+        with:
+          dotnet-version: 8.0.x
+
+      - name: Build Docker image
+        run: |
+          docker build -t ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.${{ secrets.AWS_REGION }}.amazonaws.com/aws-fargate-deploy:latest .
 
       - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@v2
@@ -22,22 +31,13 @@ jobs:
           aws-region: ${{ secrets.AWS_REGION }}
 
       - name: Login to Amazon ECR
-        id: login-ecr
-        uses: aws-actions/amazon-ecr-login@v2
-
-      - name: Build, tag, and push Docker image
-        env:
-          ECR_REPOSITORY: aws-fargate-app
-          IMAGE_TAG: latest
         run: |
-          docker build -t $ECR_REPOSITORY:$IMAGE_TAG .
-          docker tag $ECR_REPOSITORY:$IMAGE_TAG ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.${{ secrets.AWS_REGION }}.amazonaws.com/$ECR_REPOSITORY:$IMAGE_TAG
-          docker push ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.${{ secrets.AWS_REGION }}.amazonaws.com/$ECR_REPOSITORY:$IMAGE_TAG
+          aws ecr get-login-password --region ${{ secrets.AWS_REGION }} | docker login --username AWS --password-stdin ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.${{ secrets.AWS_REGION }}.amazonaws.com
 
-      - name: Deploy to Amazon ECS
-        env:
-          CLUSTER_NAME: aws-fargate-cluster
-          SERVICE_NAME: aws-fargate-service
-          TASK_DEFINITION: aws-fargate-task
+      - name: Push Docker image to Amazon ECR
         run: |
-          aws ecs update-service --cluster $CLUSTER_NAME --service $SERVICE_NAME --force-new-deployment
+          docker push ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.${{ secrets.AWS_REGION }}.amazonaws.com/aws-fargate-deploy:latest
+
+      - name: Update AWS Fargate Service
+        run: |
+          aws ecs update-service --cluster aws-fargate-cluster --service aws-fargate-service --force-new-deployment
