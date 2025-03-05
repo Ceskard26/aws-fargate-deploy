@@ -1,0 +1,6 @@
+@AwsFargateApp_HostAddress = http://localhost:5015
+
+GET {{AwsFargateApp_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###

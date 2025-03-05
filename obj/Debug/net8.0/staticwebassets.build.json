@@ -1,0 +1,11 @@
+{
+  "Version": 1,
+  "Hash": "GhePp0YWvfRcfug5CCTIjsY4DdDUxN8hkiUHEvOuwUQ=",
+  "Source": "AwsFargateApp",
+  "BasePath": "_content/AwsFargateApp",
+  "Mode": "Default",
+  "ManifestType": "Build",
+  "ReferencedProjectsConfiguration": [],
+  "DiscoveryPatterns": [],
+  "Assets": []
+}
