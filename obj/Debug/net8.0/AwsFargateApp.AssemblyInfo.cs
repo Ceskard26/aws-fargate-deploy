@@ -13,7 +13,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("AwsFargateApp")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+a73675c4e55bdbadee1c206131fe12bb644c6e3c")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+789d1f83bfa5ec34bf2a18a5dcbd452a3ecc6c31")]
 [assembly: System.Reflection.AssemblyProductAttribute("AwsFargateApp")]
 [assembly: System.Reflection.AssemblyTitleAttribute("AwsFargateApp")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]
